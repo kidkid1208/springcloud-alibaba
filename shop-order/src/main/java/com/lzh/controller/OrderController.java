@@ -40,6 +40,13 @@ public class OrderController {
         //调用商品微服务
         //直接使用微服务名字， 从nacos中获取服务地址
         Product product = productService.findByPid(pid);
+
+        if(product.getPid() == -100){
+            Order order = new Order();
+            order.setOid(-100L);
+            order.setPname("下单失败");
+            return order;
+        }
         log.info("查询到{}号商品的信息，内容是：{}",pid, JSON.toJSONString(product));
 
         //下单（创建订单）
