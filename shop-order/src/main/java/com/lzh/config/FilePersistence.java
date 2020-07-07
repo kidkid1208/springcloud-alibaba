@@ -17,15 +17,18 @@ import com.alibaba.csp.sentinel.transport.util.WritableDataSourceRegistry;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+@Configuration
 public class FilePersistence implements InitFunc {
 
     @Value("spring.application.name")
     private String appcationName;
+
 
     @Override
     public void init() throws Exception {
