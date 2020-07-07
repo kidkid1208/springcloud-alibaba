@@ -1,0 +1,30 @@
+server:
+  port: 7000
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+    gateway:
+      discovery:
+        locator:
+          enabled: true #让gateway从nacos中获得服务信息
+      routes: # 路由数组【当请求满足什么条件转发到哪个微服务】
+        - id: product_route # 当前路由发的标识，要求唯一,默认是UUID
+          uri: lb://service-product # 请求最终要被转发到的地址 lb指的是负载均衡 后面跟具体为服务标识
+          order: 1 # 路由的优先级 数字越小优先级越高
+          predicates: # 断言（条件判断，返回时boolean值 转发请求要满足的条件）
+            - Path=/product-serv/** #当请求path满足制定规则，路由信息才会正常转发
+#            - Age=18,60
+          filters: # 过滤器（在请求传递过程中对请求做一些手脚）
+            - StripPrefix=1 #在请求转发之前去掉几层路径
+            #- Log=true,false
+        - id: order_route
+          uri: lb://service-order
+          order: 1
+          predicates:
+            - Path=/order-serv/**
+          filters:
+            - StripPrefix=1
