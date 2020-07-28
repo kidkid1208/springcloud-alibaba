@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
  * @author: lizehui
  * @create: 2020-07-03 09:52
  */
-@RestController @Slf4j public class OrderController2 {
+@RestController
+@Slf4j
+public class OrderController2 {
     @Autowired
     private OrderService orderService;
 

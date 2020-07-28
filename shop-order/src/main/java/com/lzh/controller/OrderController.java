@@ -6,6 +6,7 @@ import com.lzh.domain.Product;
 import lombok.extern.slf4j.Slf4j;
 import com.lzh.service.OrderService;
 import com.lzh.service.ProductService;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
  * @author: lizehui
  * @create: 2020-07-03 09:52
  */
-@RestController
+//@RestController
 @Slf4j
 public class OrderController {
 
@@ -32,6 +33,10 @@ public class OrderController {
 
     @Autowired
     private DiscoveryClient discoveryClient;
+
+    @Autowired
+     private RocketMQTemplate rocketMQTemplate;
+
     //下单
     @RequestMapping("/order/prod/{pid}")
     public Order order(@PathVariable("pid") Integer pid){
@@ -62,6 +67,11 @@ public class OrderController {
         orderService.createOrder(order);
 
         log.info("创建订单成功，订单信息为{}", JSON.toJSONString(order));
+
+        //向mq中投递一个下单成功消息
+        //参数一 指定topic
+        //参数二 指定消息体
+        rocketMQTemplate.convertAndSend("order-topic", order);
 
         return order;
     }

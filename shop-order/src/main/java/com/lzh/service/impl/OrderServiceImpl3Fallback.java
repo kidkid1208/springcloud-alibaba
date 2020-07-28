@@ -12,7 +12,7 @@ public class OrderServiceImpl3Fallback {
     //2 但是允许在参数列表的最后加入一个参数BlockException, 用来接收原方法中发生的异常
     public static String fallback(String name, Throwable e) {
         //自定义异常处理逻辑
-        log.error("触发了Throwable,内容为{}", e);
+        log.error("触发了Throwable,内容为:{}", e);
         return "Throwable";
     }
 }

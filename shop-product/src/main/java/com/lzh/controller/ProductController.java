@@ -42,10 +42,16 @@ public class ProductController {
 
     //商品信息查询
     @RequestMapping("/product/{pid}")
-    public Product product(@PathVariable("pid") Integer pid){
-        log.info("接下来进行{}号商品信息查询",pid);
+    public Product product(@PathVariable("pid") Integer pid) {
+        log.info("接下来进行{}号商品信息查询", pid);
         Product product = productService.findByPid(pid);
         log.info("商品信息查询成功，内容为{}", JSON.toJSONString(product));
         return product;
+    }
+
+    //减少库存
+    @RequestMapping("/product/reduceInventory")
+    public void reduceInventory(Integer pid, int num) {
+        productService.reduceInventory(pid, num);
     }
 }
