@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+
+    <springProperty name="log.filename" source="server.logback.log-filename"/>
+    <springProperty name="log.bussiness-dir" source="server.logback.bussiness-dir"/>
+    <springProperty name="root.level" source="server.logback.root-level"/>
+    <springProperty name="log.pattern" source="spring.application.log-pattern"
+                    defaultValue="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %logger{0}:%m%n"/>
+
+    <contextName>product</contextName>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+            <charset>UTF8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${log.bussiness-dir}/${log.filename}.log</File>
+        <append>true</append>
+        <encoder>
+            <ImmediateFlush>true</ImmediateFlush>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- roll over daily -->
+            <fileNamePattern>${log.bussiness-dir}/${log.filename}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- each file should be at most 200MB, keep 30 days worth of history, but at most 20GB -->
+            <maxFileSize>10KB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>30KB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 异步输出 -->
+    <appender name="AsyncOut" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold><!-- 不丢失日志 -->
+        <queueSize>1024</queueSize>
+        <appender-ref ref="RollingFile"/>
+    </appender>
+
+    <springProfile name="test">
+        <root level="${root.level}">
+            <appender-ref ref="RollingFile"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="dev">
+        <root level="${root.level}">
+            <!-- <appender-ref ref="FILE" />  -->
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+</configuration>
